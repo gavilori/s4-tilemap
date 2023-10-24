@@ -34,19 +34,21 @@ const selectHeight = selectCanvas.height / numSelectables;
 
 
 //creating the tilemap nested array
-let tilemap: HTMLImageElement[][] = new Array(numTiles);
+let tilemap: number[][] = new Array(numTiles);
 
 for(let i = 0; i < numTiles; i++) {
     let row = new Array(numTiles);
     for (let j = 0; j < numTiles; j++) {
-        row[j] = new Image();
-        row[j].src = "/tile1.png";
+        row[j] = 0;
+        // row[j] = new Image();
+        // row[j].src = "/tile1.png";
     }
     tilemap[i] = row;
 }
 
 //track the selected tile
-let currentTile = "/tile1.png";
+// let currentTile = "/tile1.png";
+let currentTile = 0;
 
 //draw the initial canvases
 redrawTilemap();
@@ -54,11 +56,13 @@ drawSelectCanvas();
 
 
 //Function that draws a texture to a specific canvas ctx
-function drawTexture(row: number, col: number, ctx: CanvasRenderingContext2D, image: HTMLImageElement, width: number, height: number, cellSize: number) {
-    image.onload = () => {
-        ctx.drawImage(image, row * cellSize, col * cellSize, width, height)
+function drawTexture(row: number, col: number, ctx: CanvasRenderingContext2D, image: number, width: number, height: number, cellSize: number) {
+    const newImage = new Image();
+    newImage.src = imageUrls[image];
+    newImage.onload = () => {
+        ctx.drawImage(newImage, row * cellSize, col * cellSize, width, height)
     };
-    ctx.drawImage(image, row * cellSize, col * cellSize, width, height)
+    ctx.drawImage(newImage, row * cellSize, col * cellSize, width, height)
 }
 
 
@@ -79,7 +83,7 @@ gridCanvas.addEventListener("click", (e) => {
     const coordX = Math.trunc(e.offsetX / tileSize);
     const coordY = Math.trunc(e.offsetY / tileSize);
 
-    tilemap[coordX][coordY].src = currentTile;
+    tilemap[coordX][coordY] = currentTile;
     redrawTilemap();
 })
 
@@ -90,13 +94,13 @@ gridCanvas.addEventListener("click", (e) => {
 function drawSelectCanvas()
 {
     for (let i = 0; i < numSelectables; i++) {
-        const selectableImage = new Image();
-        selectableImage.src = imageUrls[i];
-        drawTexture(0, i, selectCtx, selectableImage, selectCanvas.width, selectHeight, 64);
+        // const selectableImage = new Image();
+        // selectableImage.src = imageUrls[i];
+        drawTexture(0, i, selectCtx, i, selectCanvas.width, selectHeight, 64);
     }
 }
 
 selectCanvas.addEventListener("click", (e) => {
     const coordY = Math.trunc(e.offsetY / selectHeight);
-    currentTile = imageUrls[coordY];
+    currentTile = coordY;
 })
