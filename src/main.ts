@@ -78,13 +78,25 @@ function redrawTilemap()
     }
 }
 
+let cursorActive = false;
 
-gridCanvas.addEventListener("click", (e) => {
+gridCanvas.addEventListener("mousedown", () => {
+    cursorActive = true;
+})
+
+gridCanvas.addEventListener("mouseup", () => {
+    cursorActive = false;
+})
+
+gridCanvas.addEventListener("mousemove", (e) => {
+    if (cursorActive) {
     const coordX = Math.trunc(e.offsetX / tileSize);
     const coordY = Math.trunc(e.offsetY / tileSize);
 
     tilemap[coordX][coordY] = currentTile;
-    redrawTilemap();
+    drawTexture(coordX, coordY, gridCtx, currentTile, gridCanvas.width / numTiles, gridCanvas.height / numTiles, tileSize)
+    // redrawTilemap();
+    }
 })
 
 
